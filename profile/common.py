@@ -1,5 +1,5 @@
 from time import sleep
-from typing import List, Set
+from typing import Set
 
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -25,16 +25,18 @@ def get_users_amount(link_text: str):
 
 
 def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[str]:
-    action = ActionChains(browser)
-    action.click(window_with_list).perform()
-
     print('users need to fetch:', users_amount)
 
     wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
     wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
 
+    list_element_surrounding = window_with_list.find_element(By.CLASS_NAME, value='d7ByH')
+
+    action = ActionChains(browser)
+    action.click(list_element_surrounding).perform()
+
     users_meta = []
-    while len(users_meta) < users_amount:
+    while len(users_meta) < users_amount - 1:
         action.send_keys(Keys.PAGE_DOWN).perform()
         wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
         users_meta = window_with_list.find_elements(By.TAG_NAME, value='li')
@@ -70,8 +72,6 @@ def get_followers_nicknames(browser):
         followers_list_window
     )
 
-    followers_list_window.send_keys(Keys.ESCAPE)
-
     return followers_nicknames
 
 
@@ -101,7 +101,5 @@ def get_subs_nicknames(browser):
         subs_amount,
         subscriptions_list_window
     )
-
-    subscriptions_list_window.send_keys(Keys.ESCAPE)
 
     return subs_nicknames
