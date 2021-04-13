@@ -1,5 +1,5 @@
 from app.browser import chrome
-from profile.find_unfollowers import find_unfollowers
+from profile.find_unfollowers import subscribtions_info
 
 
-find_unfollowers(chrome)
+subscribtions_info(chrome)
