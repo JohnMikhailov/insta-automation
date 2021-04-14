@@ -1,4 +1,3 @@
-from time import sleep
 from typing import Set
 
 from selenium.webdriver.common.action_chains import ActionChains
@@ -28,22 +27,16 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     print('users need to fetch:', users_amount)
 
     wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
-    wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
-
-    list_element_surrounding = window_with_list.find_element(By.CLASS_NAME, value='d7ByH')
-
-    action = ActionChains(browser)
-    action.click(list_element_surrounding).perform()
 
     users_meta = []
-    while len(users_meta) < users_amount - 1:
-        action.send_keys(Keys.PAGE_DOWN).perform()
+    while len(users_meta) < users_amount:
+        action = ActionChains(browser)
+        action.send_keys([Keys.TAB] * 2).perform()
+
         wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
         users_meta = window_with_list.find_elements(By.TAG_NAME, value='li')
 
-        print('done:', f'{round((len(users_meta) / users_amount) * 100, 1)}%')
-
-        sleep(0.3)  # to slow down server spamming
+        print('found:', len(users_meta), 'done:', f'{round((len(users_meta) / users_amount) * 100, 1)}%')
 
     user_nicknames = window_with_list.find_elements(By.CLASS_NAME, value='FPmhX.notranslate._0imsa')
     return set(elem.text for elem in user_nicknames)
@@ -76,7 +69,8 @@ def get_followers_nicknames(browser):
 
 
 def close_window_with_users_list(browser):
-    ActionChains(browser).send_keys(Keys.ESCAPE).perform()
+    close_button = browser.find_element(By.CLASS_NAME, value='wpO6b')
+    ActionChains(browser).click(close_button).perform()
 
 
 def get_subs_nicknames(browser):
