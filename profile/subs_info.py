@@ -1,4 +1,4 @@
-from app.persistent import save_report
+from app.report import save_report
 from profile.common import open_profile, get_users_info, close_window_with_users_list
 from profile.login import login, close_popups_after_login
 
@@ -21,8 +21,13 @@ def subscribtions_info(browser, result_path: str):  # noqa
         not_follow_me_back = s - f
 
         report = {
-            'followers found': [f'{f_i.users_amount}'],
-            'subscriptions found': [f'{s_i.users_amount}'],
+            'total': [
+                f'followers: {f_i.users_amount}',
+                f'subscriptions: {s_i.users_amount}',
+                f'mutual subscriptions: {len(mutual)}',
+                f'i am not follow: {len(i_am_not_follow)}',
+                f'not follow me back: {len(not_follow_me_back)}'
+            ],
             'mutual': mutual,
             'i am not follow': i_am_not_follow,
             'not follow me back': not_follow_me_back

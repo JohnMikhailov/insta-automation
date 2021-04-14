@@ -1,5 +1,7 @@
 from datetime import datetime
 from functools import partial
+
+from app.config import config
 from app.exceptions import AppError
 
 
@@ -7,7 +9,8 @@ def save_report_as_txt(path: str, report: dict):
     dashes = f"{('-' * 20)}\n"
     spaces = ' ' * 2
     with open(path, 'w') as f:
-        f.write(f'report {datetime.today()}\n')
+        f.write(f'report {datetime.today().ctime()}\n')
+        f.write(f'triggered by {config.INSTAGRAM_LOGIN}\n')
         for topic, lines in report.items():
             f.write(dashes)
             f.write(f'{topic}:\n')
