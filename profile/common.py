@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.wait import WebDriverWait
 
 from app.config import config
+from app.meta import SubscriptionInfo
 
 
 def open_profile(browser):
@@ -27,6 +28,7 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     print('users need to fetch:', users_amount)
 
     wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
+    wait.until(lambda p: p.find_element(By.TAG_NAME, value='li'))
 
     users_meta = []
     while len(users_meta) < users_amount:
@@ -42,58 +44,39 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
     return set(elem.text for elem in user_nicknames)
 
 
-def get_followers_nicknames(browser):
+def get_users_info(browser, who: str):
+    user_list_types = {
+        'follows_me': 'подписчиков',
+        'i_am_follow': 'подписок'
+    }
     wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
     wait.until(lambda p: p.find_element(By.CLASS_NAME, value='zwlfE'))
     profile_main_buttons = browser.find_element(By.CLASS_NAME, value='zwlfE')
 
-    followers_number_as_button = profile_main_buttons.find_element(
+    users_number_as_button = profile_main_buttons.find_element(
         By.PARTIAL_LINK_TEXT,
-        value='подписчиков'
+        value=user_list_types[who]
     )
 
-    followers_amount = get_users_amount(followers_number_as_button.text)
-    followers_number_as_button.click()
+    users_amount = get_users_amount(users_number_as_button.text)
+    users_number_as_button.click()
 
     wait.until(lambda p: p.find_element(By.CLASS_NAME, value='isgrP'))
 
-    followers_list_window = browser.find_element(By.CLASS_NAME, value='isgrP')
+    users_list_window = browser.find_element(By.CLASS_NAME, value='isgrP')
 
-    followers_nicknames = fetch_nicknames_from_list(
+    nicknames = fetch_nicknames_from_list(
         browser,
-        followers_amount,
-        followers_list_window
+        users_amount,
+        users_list_window
     )
 
-    return followers_nicknames
+    return SubscriptionInfo(
+        users_amount=users_amount,
+        nicknames=nicknames
+    )
 
 
 def close_window_with_users_list(browser):
     close_button = browser.find_element(By.CLASS_NAME, value='wpO6b')
     ActionChains(browser).click(close_button).perform()
-
-
-def get_subs_nicknames(browser):
-    wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
-    wait.until(lambda p: p.find_element(By.CLASS_NAME, value='zwlfE'))
-    profile_main_buttons = browser.find_element(By.CLASS_NAME, value='zwlfE')
-
-    subscriptions_number_as_button = profile_main_buttons.find_element(
-        By.PARTIAL_LINK_TEXT,
-        value='подписок'
-    )
-
-    subs_amount = get_users_amount(subscriptions_number_as_button.text)
-    subscriptions_number_as_button.click()
-
-    wait.until(lambda p: p.find_element(By.CLASS_NAME, value='isgrP'))
-
-    subscriptions_list_window = browser.find_element(By.CLASS_NAME, value='isgrP')
-
-    subs_nicknames = fetch_nicknames_from_list(
-        browser,
-        subs_amount,
-        subscriptions_list_window
-    )
-
-    return subs_nicknames

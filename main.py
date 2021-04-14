@@ -1,5 +1,6 @@
 from app.browser import chrome
-from profile.find_unfollowers import subscribtions_info
+from app.config import config
+from profile.subs_info import subscribtions_info
 
 
-subscribtions_info(chrome)
+subscribtions_info(chrome, result_path=config.REPORT_PATH)

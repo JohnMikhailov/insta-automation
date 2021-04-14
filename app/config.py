@@ -12,6 +12,7 @@ cast_to = lambda type_: lambda *args, value: type_(value)
 class Config:
     MAX_WAIT_ELEMENT_APPEARANCE_SEC = cast_to(int)
     CHROME_DRIVER_PATH = cast_to(str)
+    REPORT_PATH = cast_to(str)
 
     INSTAGRAM_LOGIN = cast_to(str) # noqa
     INSTAGRAM_PASSWORD = cast_to(str)  # noqa
