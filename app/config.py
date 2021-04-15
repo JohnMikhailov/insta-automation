@@ -17,6 +17,7 @@ class Config:
     INSTAGRAM_LOGIN = cast_to(str) # noqa
     INSTAGRAM_PASSWORD = cast_to(str)  # noqa
     INSTAGRAM_URL = cast_to(str)  # noqa
+    TIMEOUT_FOR_INSTA_TASK_EXECUTION_SEC = cast_to(int) # noqa
 
     def __init__(self, **kwargs):
         for var, raw_value in kwargs.items():

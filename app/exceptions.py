@@ -7,3 +7,7 @@ class AppError(Exception):
 
     def __str__(self):
         return f'{type(self)} message: {self.message}'
+
+
+class TimeoutAppError(AppError):
+    message = 'Time of a task execution is up'
