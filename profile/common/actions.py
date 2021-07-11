@@ -46,8 +46,8 @@ def fetch_nicknames_from_list(browser, users_amount, window_with_list) -> Set[st
 
 def get_users_info(browser, who: str):
     user_list_types = {
-        'follows_me': 'подписчиков',
-        'i_am_follow': 'подписок'
+        'follows_me': 'followers',  # TODO switch locale - now it depends on locale
+        'i_am_follow': 'following'  # TODO switch locale - now it depends on locale
     }
     wait = WebDriverWait(browser, timeout=config.MAX_WAIT_ELEMENT_APPEARANCE_SEC)
     wait.until(lambda p: p.find_element(By.CLASS_NAME, value='zwlfE'))
